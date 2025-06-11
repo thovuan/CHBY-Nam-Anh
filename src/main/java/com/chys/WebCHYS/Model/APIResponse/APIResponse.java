@@ -11,13 +11,16 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 public class APIResponse<T> {
 
-    private boolean status;
+    private int status;
 
     private OffsetDateTime datetime;
 
     private String message;
 
-
-
     private T data;
+
+    public static <T> APIResponse<T> success(int status,String message, T data) {
+        return new APIResponse<>(status, OffsetDateTime.now(), message, data);
+    }
+
 }
