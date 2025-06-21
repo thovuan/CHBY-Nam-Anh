@@ -1,6 +1,7 @@
 package com.chys.WebCHYS.Controller;
 
 import com.chys.WebCHYS.Model.APIResponse.APIResponse;
+import com.chys.WebCHYS.Model.DTO.ChangepasswordDTO;
 import com.chys.WebCHYS.Model.DTO.LoginDTO;
 import com.chys.WebCHYS.Model.DTO.RegisterDTO;
 import com.chys.WebCHYS.Model.DTO.UserDTO;
@@ -60,5 +61,20 @@ public class AccountController {
                         .message("Đăng ký thành công")
                         .data(responseDto)
                         .build());
+    }
+
+    @PutMapping("/changepassword")
+    public ResponseEntity<APIResponse<ChangepasswordDTO>> changepassword(@Valid @RequestBody ChangepasswordDTO changepasswordDTO) {
+        Users chps = authService.changepassword(changepasswordDTO);
+        ChangepasswordDTO responseDTO = userMapper.cptoDto(chps);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(APIResponse.<ChangepasswordDTO>builder()
+                        .status(200)
+                        .datetime(OffsetDateTime.now())
+                        .message("Đổi mật khẩu thành công")
+                        .data(responseDTO)
+                        .build());
+
     }
 }

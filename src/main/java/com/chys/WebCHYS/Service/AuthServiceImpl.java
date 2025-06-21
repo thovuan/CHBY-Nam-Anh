@@ -2,6 +2,8 @@ package com.chys.WebCHYS.Service;
 
 import com.chys.WebCHYS.ExceptionHandler.BadRequestException;
 import com.chys.WebCHYS.ExceptionHandler.ConflictException;
+import com.chys.WebCHYS.ExceptionHandler.UserNotFoundException;
+import com.chys.WebCHYS.Model.DTO.ChangepasswordDTO;
 import com.chys.WebCHYS.Model.DTO.RegisterDTO;
 import com.chys.WebCHYS.Model.Users;
 import com.chys.WebCHYS.Model.modelInterface.UserMapper;
@@ -26,17 +28,37 @@ public class AuthServiceImpl implements AuthService{
             throw new ConflictException("Email đã tồn tại", "EMAIL_EXISTS");
         }
 
+        if (!registerDTO.getPassword().equals(registerDTO.getRetypePassword())) {
+            throw new BadRequestException("Mật khẩu không trùng khớp", "PASSWORD_NOT_MATCH");
+        }
 
 
         // Tạo entity từ DTO
         Users user = userMapper.rtoEntity(registerDTO);
 
         // Mã hoá mật khẩu bằng cách đơn giản (khi chưa có Spring Security)
-        user.setPassword(user.getPassword()); // hoặc giữ nguyên nếu chưa cần
+        //user.setPassword(user.getPassword()); // hoặc giữ nguyên nếu chưa cần
 
 //        // Gán mặc định
 //        user.setActive(true);
 //        user.setRole("USER");
+
+        return userRepository.save(user);
+    }
+
+    @Override
+    public Users changepassword(ChangepasswordDTO changepasswordDTO) {
+        // 1. Kiểm tra username tồn tại
+        Users user = userRepository.findByUsername(changepasswordDTO.getUsername())
+                .orElseThrow(() -> new UserNotFoundException("Tên đăng nhập không tìm thấy"));
+
+        // 2. Kiểm tra mật khẩu trùng khớp
+        if (!changepasswordDTO.getPassword().equals(changepasswordDTO.getRetypePassword())) {
+            throw new BadRequestException("Mật khẩu không trùng khớp", "PASSWORD_NOT_MATCH");
+        }
+
+        // 3. Cập nhật mật khẩu (nếu chưa dùng encode thì cứ gán trực tiếp)
+        user.setPassword(changepasswordDTO.getPassword());
 
         return userRepository.save(user);
     }

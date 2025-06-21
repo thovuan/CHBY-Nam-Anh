@@ -2,6 +2,7 @@ package com.chys.WebCHYS.Model.DTO;
 
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -22,6 +23,9 @@ public class ChangepasswordDTO {
             message = "Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 chữ thường, 1 số và 1 ký tự đặc biệt"
     )
     private String password;
+
+    @NotBlank(message = "Mật khẩu nhập lại không được để trống")
+    private String retypePassword;
 
 
     @Email(message = "Email không đúng định dạng")
