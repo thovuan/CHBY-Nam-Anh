@@ -2,7 +2,11 @@ package com.chys.WebCHYS.Controller;
 
 import com.chys.WebCHYS.Model.APIResponse.APIResponse;
 import com.chys.WebCHYS.Model.DTO.LoginDTO;
+import com.chys.WebCHYS.Model.DTO.RegisterDTO;
 import com.chys.WebCHYS.Model.DTO.UserDTO;
+import com.chys.WebCHYS.Model.Users;
+import com.chys.WebCHYS.Model.modelInterface.UserMapper;
+import com.chys.WebCHYS.Service.AuthService;
 import com.chys.WebCHYS.Service.UsersService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -18,22 +22,43 @@ public class AccountController {
 
     private final UsersService usersService;
 
-    public AccountController(UsersService usersService) {
+    private final AuthService authService;
+    private final UserMapper userMapper;
+
+    public AccountController(UsersService usersService, AuthService authService, UserMapper userMapper) {
         this.usersService = usersService;
+        this.authService = authService;
+        this.userMapper = userMapper;
     }
 
     @PostMapping("/login")
     public ResponseEntity<APIResponse<?>> loginPage(Model model, @RequestBody @Valid LoginDTO loginDTO) {
         LoginDTO userDto = usersService.login(loginDTO.getUsername(), loginDTO.getPassword());
 
-        APIResponse<LoginDTO> response = new APIResponse<>(
-                HttpStatus.OK.value(),
-                OffsetDateTime.now(),
-                "Đăng nhập thành công",
-                userDto
-        );
+        APIResponse<LoginDTO> response = APIResponse.<LoginDTO>builder()
+                .status(HttpStatus.OK.value())
+                .datetime(OffsetDateTime.now())
+                .message("Đăng nhập thành công")
+                .data(userDto)
+                .build();
+
+
 
         return ResponseEntity.ok(response);
 
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<APIResponse<RegisterDTO>> register(@Valid @RequestBody RegisterDTO registerDTO) {
+        Users savedUser = authService.register(registerDTO);
+        RegisterDTO responseDto = userMapper.rtoDto(savedUser);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(APIResponse.<RegisterDTO>builder()
+                        .status(201)
+                        .datetime(OffsetDateTime.now())
+                        .message("Đăng ký thành công")
+                        .data(responseDto)
+                        .build());
     }
 }

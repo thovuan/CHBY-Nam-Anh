@@ -1,10 +1,11 @@
 package com.chys.WebCHYS.Model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import org.hibernate.validator.constraints.UUID;
 
 import java.time.OffsetDateTime;
@@ -19,7 +20,7 @@ import java.time.OffsetDateTime;
 @Table(name = "users")
 public class Users {
     @Id
-    @UUID
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(nullable = false, updatable = false, length = 40, name="id")
     private String id;
 
@@ -53,12 +54,16 @@ public class Users {
     @Column(name = "google_id")
     private String googleId;
 
-    @Column(nullable = false, name = "account_type")
-    private String accountType;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "account_type", columnDefinition = "account_type_enum") // Map to the custom DB enum type
+    @JdbcType(PostgreSQLEnumJdbcType.class)
+    private AccountType accountType;
 
+    @CreationTimestamp
     @Column(nullable = false, name = "created_at")
     private OffsetDateTime createdAt;
 
+    @UpdateTimestamp
     @Column(name = "updated_at")
     private OffsetDateTime updatedAt;
 }

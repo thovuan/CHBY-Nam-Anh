@@ -3,6 +3,7 @@ package com.chys.WebCHYS.Service;
 import com.chys.WebCHYS.ExceptionHandler.BadCredentialsException;
 import com.chys.WebCHYS.ExceptionHandler.UserNotFoundException;
 import com.chys.WebCHYS.Model.DTO.LoginDTO;
+import com.chys.WebCHYS.Model.DTO.RegisterDTO;
 import com.chys.WebCHYS.Model.Users;
 import com.chys.WebCHYS.Model.modelInterface.UserMapper;
 import com.chys.WebCHYS.Repository.UsersRepository;
@@ -27,7 +28,7 @@ public class UsersService {
     public LoginDTO login (String username, String password) {
         Users user = userRepository.findByUsername(username)
                 .filter(pw -> password.equals(pw.getPassword()))
-                .orElseThrow(() -> new UserNotFoundException("Tài khoản hoặc mật khẩu sai! Vui lòng thử lại"));
+                .orElseThrow(() -> new BadCredentialsException("Tài khoản hoặc mật khẩu sai! Vui lòng thử lại"));
 
         // So sánh mật khẩu (giả sử dùng BCrypt)
 //        if (!passwordEncoder.matches(password, user.getPassword())) {
@@ -41,4 +42,6 @@ public class UsersService {
         // Đăng nhập thành công => map sang DTO để trả về
         return userMapper.toDto(user);
     }
+
+
 }

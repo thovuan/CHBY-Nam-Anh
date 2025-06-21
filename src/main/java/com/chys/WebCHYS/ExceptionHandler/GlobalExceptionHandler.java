@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
                 errors.put(error.getField(), error.getDefaultMessage())
         );
 
-        APIResponse<Map<String, String>> response = new APIResponse<>(HttpStatus.BAD_REQUEST.value(), OffsetDateTime.now(), "Validation failed", errors);
+        APIResponse<Map<String, String>> response = new APIResponse<>(HttpStatus.BAD_REQUEST.value(), OffsetDateTime.now(), "Validation failed", "VF", errors);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
@@ -54,15 +54,39 @@ public class GlobalExceptionHandler {
                 HttpStatus.UNAUTHORIZED.value(),
                 OffsetDateTime.now(),
                 ex.getMessage(),
+                "AUTH_INVALID_CREDENTIALS",
                 null
         );
 
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<APIResponse<Object>> conflictException(ConflictException ex) {
+        APIResponse<Object> response = APIResponse.builder()
+                .status(HttpStatus.CONFLICT.value())
+                .datetime(OffsetDateTime.now())
+                .message(ex.getMessage())
+                .errorCode(ex.getErrorCode())
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<APIResponse<Object>> handleBadRequest(BadRequestException ex) {
+        APIResponse<Object> response = APIResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .datetime(OffsetDateTime.now())
+                .message(ex.getMessage())
+                .errorCode(ex.getErrorCode())
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<APIResponse<Object>> handleGenericException(Exception ex) {
-        APIResponse<Object> response = new APIResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), OffsetDateTime.now(), "Internal Server Error: " + ex.getMessage(), null);
+        APIResponse<Object> response = new APIResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), OffsetDateTime.now(), "Internal Server Error: " + ex.getMessage(), "ISE", null);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

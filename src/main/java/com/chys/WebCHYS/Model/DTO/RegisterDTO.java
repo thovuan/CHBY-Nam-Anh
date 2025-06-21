@@ -1,5 +1,8 @@
 package com.chys.WebCHYS.Model.DTO;
 
+import com.chys.WebCHYS.Model.AccountType;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -30,4 +33,10 @@ public class RegisterDTO {
     @Size(min = 10, max = 15, message = "Số điện thoại phải từ 10 đến 15 ký tự")
     @Pattern(regexp = "\\d+", message = "Số điện thoại chỉ được chứa chữ số")
     private String phoneNumber;
+
+    private String roleId;
+
+
+    @JsonProperty("accountType")
+    private AccountType accountType;
 }

@@ -1,10 +1,14 @@
 package com.chys.WebCHYS.Model.modelInterface;
 
+import com.chys.WebCHYS.Model.AccountType;
 import com.chys.WebCHYS.Model.DTO.ChangepasswordDTO;
 import com.chys.WebCHYS.Model.DTO.LoginDTO;
 import com.chys.WebCHYS.Model.DTO.RegisterDTO;
 import com.chys.WebCHYS.Model.Users;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
@@ -20,7 +24,17 @@ public interface UserMapper {
 
     RegisterDTO rtoDto(Users user);
 
+//    @Mapping(target = "accountType", ignore = true)
     Users rtoEntity(RegisterDTO registerDTO);
+
+//    @AfterMapping
+//    protected void setAccountType(RegisterDTO dto, @MappingTarget Users user) {
+//        try {
+//            user.setAccountType(AccountType.valueOf(dto.getAccountType().toUpperCase()));
+//        } catch (IllegalArgumentException | NullPointerException e) {
+//            throw new BadRequestException("Loại tài khoản không hợp lệ: " + dto.getAccountType(), "INVALID_ACCOUNT_TYPE");
+//        }
+//    }
 
     ChangepasswordDTO cptoDto(Users user);
 
