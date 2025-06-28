@@ -1,10 +1,8 @@
 package com.chys.WebCHYS.Service;
 
 import com.chys.WebCHYS.ExceptionHandler.BadCredentialsException;
-import com.chys.WebCHYS.ExceptionHandler.UserNotFoundException;
 import com.chys.WebCHYS.Model.DTO.LoginDTO;
-import com.chys.WebCHYS.Model.DTO.RegisterDTO;
-import com.chys.WebCHYS.Model.Users;
+import com.chys.WebCHYS.Model.Entity.Users;
 import com.chys.WebCHYS.Model.modelInterface.UserMapper;
 import com.chys.WebCHYS.Repository.UsersRepository;
 import org.springframework.stereotype.Service;

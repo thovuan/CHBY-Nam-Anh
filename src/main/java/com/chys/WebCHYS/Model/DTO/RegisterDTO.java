@@ -1,8 +1,7 @@
 package com.chys.WebCHYS.Model.DTO;
 
-import com.chys.WebCHYS.Model.AccountType;
+import com.chys.WebCHYS.Model.Entity.AccountType;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

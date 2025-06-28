@@ -1,4 +1,4 @@
-package com.chys.WebCHYS.Model;
+package com.chys.WebCHYS.Model.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -6,7 +6,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
-import org.hibernate.validator.constraints.UUID;
 
 import java.time.OffsetDateTime;
 
@@ -17,7 +16,18 @@ import java.time.OffsetDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "users")
+@Table(name = "users",
+        indexes = {
+                @Index(name = "idx_users_email", columnList = "email"),
+                @Index(name = "idx_users_username", columnList = "username"),
+                @Index(name = "idx_users_role_id", columnList = "role_id")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_username", columnNames = "username"),
+                @UniqueConstraint(name = "uk_email", columnNames = "email"),
+                @UniqueConstraint(name = "uk_google_id", columnNames = "google_id")
+        })
+
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
